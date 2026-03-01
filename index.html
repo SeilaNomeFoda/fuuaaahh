@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox - Redirecionamento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .roblox-logo {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .discord-notification {
+            background: rgba(114, 137, 218, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid rgba(114, 137, 218, 0.5);
+        }
+
+        .discord-icon {
+            width: 30px;
+            height: 30px;
+            background: #7289da;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .discord-text {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .redirect-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .countdown {
+            font-size: 4em;
+            font-weight: bold;
+            color: #ffd93d;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .redirect-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #ffd93d;
+            color: #333;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .redirect-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 217, 61, 0.4);
+        }
+
+        .visit-counter {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Roblox</h1>
+        <div class="roblox-logo">🎯</div>
+        
+        <div class="discord-notification">
+            <span class="discord-icon">💬</span>
+            <span class="discord-text">Visitas sendo registradas no Discord</span>
+        </div>
+        
+        <div class="redirect-box">
+            <p>Redirecionando para o Roblox em:</p>
+            <div class="countdown" id="countdown">5</div>
+            <button class="redirect-button" onclick="redirectNow()">
+                Ir para Roblox Agora 🚀
+            </button>
+        </div>
+        
+        <div class="visit-counter" id="visitCounter">
+            📊 Carregando contador de visitas...
+        </div>
+        
+        <div class="footer">
+            © 2025 - Clique no botão para ir ao Roblox
+        </div>
+    </div>
+
+    <script>
+        // COLE SEU WEBHOOK DO DISCORD AQUI (substitua a URL abaixo)
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI';
+        
+        // Função para redirecionar imediatamente
+        function redirectNow() {
+            window.location.href = "https://www.roblox.com";
+        }
+        
+        // Função para iniciar o contador regressivo
+        function startCountdown(seconds) {
+            const countdownEl = document.getElementById('countdown');
+            let timeLeft = seconds;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                countdownEl.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    redirectNow();
+                }
+            }, 1000);
+        }
+        
+        // Função para obter o número de visitas
+        async function getVisitCount() {
+            try {
+                // Usando CountAPI para contador persistente
+                const response = await fetch('https://api.countapi.xyz/hit/roblox-redirect/visitas');
+                const data = await response.json();
+                return data.value;
+            } catch (error) {
+                console.log('Erro ao obter contador:', error);
+                return null;
+            }
+        }
+        
+        // Função para enviar webhook ao Discord com número de visitas
+        async function sendToDiscord() {
+            // Verificar se o webhook foi configurado
+            if (WEBHOOK_URL === 'https://discord.com/api/webhooks/1474810438871941171/kam7oiP97lGyiFj4U6MKhCqDaYsyrXnwf1yVcctZA66kJwplWP5wHwi1KBLyaMbUKVoL') {
+                document.getElementById('visitCounter').innerHTML = '⚠️ Configure o webhook do Discord no código';
+                console.warn('Webhook não configurado! Edite o arquivo e cole sua URL do Discord.');
+                return;
+            }
+            
+            // Obter número de visitas
+            const visitCount = await getVisitCount();
+            
+            // Coletar informações do visitante
+            const visitorData = {
+                time: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+                page: window.location.pathname,
+                referrer: document.referrer || 'Direto',
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                screenSize: `${window.screen.width}x${window.screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                visitNumber: visitCount || 'Não disponível'
+            };
+            
+            // Atualizar contador na tela
+            if (visitCount) {
+                document.getElementById('visitCounter').innerHTML = `📊 Total de visitas: ${visitCount}`;
+            }
+            
+            // Criar mensagem para o Discord
+            const discordMessage = {
+                content: `@here **Nova visita detectada!** 🎮`,
+                embeds: [{
+                    title: '📊 Nova Visita - Roblox Redirect',
+                    color: 0xff6b6b,
+                    fields: [
+                        {
+                            name: '🕐 Horário',
+                            value: visitorData.time,
+                            inline: true
+                        },
+                        {
+                            name: '📱 Dispositivo',
+                            value: visitorData.userAgent.split('(')[1]?.split(';')[0] || 'Desconhecido',
+                            inline: true
+                        },
+                        {
+                            name: '🌐 Idioma',
+                            value: visitorData.language,
+                            inline: true
+                        },
+                        {
+                            name: '📺 Tela',
+                            value: visitorData.screenSize,
+                            inline: true
+                        },
+                        {
+                            name: '⏰ Fuso Horário',
+                            value: visitorData.timezone,
+                            inline: true
+                        },
+                        {
+                            name: '🔢 Número da Visita',
+                            value: `**${visitorData.visitNumber}**`,
+                            inline: true
+                        },
+                        {
+                            name: '🔗 Origem',
+                            value: visitorData.referrer || 'Acesso Direto',
+                            inline: false
+                        }
+                    ],
+                    footer: {
+                        text: `Roblox Redirect • Monitoramento de Visitas • Total: ${visitorData.visitNumber}`,
+                        icon_url: 'https://cdn.discordapp.com/emojis/123456789.png'
+                    },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+            
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(discordMessage)
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Visita registrada no Discord!');
+                } else {
+                    console.error('❌ Erro ao enviar para o Discord');
+                    document.getElementById('visitCounter').innerHTML = '❌ Erro ao registrar visita no Discord';
+                }
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                document.getElementById('visitCounter').innerHTML = '❌ Erro ao registrar visita';
+            }
+        }
+        
+        // Função alternativa usando localStorage para contador local
+        function getLocalVisitCount() {
+            let count = localStorage.getItem('visitCount');
+            if (count) {
+                count = parseInt(count) + 1;
+            } else {
+                count = 1;
+            }
+            localStorage.setItem('visitCount', count);
+            return count;
+        }
+        
+        // Inicializar quando a página carregar
+        window.addEventListener('load', function() {
+            // Verificar se o webhook está configurado
+            if (WEBHOOK_URL === 'https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI') {
+                // Usar contador local como fallback
+                const localCount = getLocalVisitCount();
+                document.getElementById('visitCounter').innerHTML = `📊 Total de visitas (local): ${localCount}`;
+                console.log('⚠️ Webhook não configurado. Usando contador local. Visita #' + localCount);
+            } else {
+                // Enviar para o Discord com contador online
+                sendToDiscord();
+            }
+            
+            // Iniciar contagem regressiva de 5 segundos
+            startCountdown(5);
+        });
+    </script>
+</body>
+</html>
